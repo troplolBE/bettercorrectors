@@ -84,7 +84,14 @@ User Interfaces should have input boxes:
 - Project ?
 - School ?
 
-In command line it would be 
+In command line it would be first, second and third argument:
+- first -> client_id
+- second -> secret
+- third -> time
+
+Or use a config file for both possibilities.
+
+Program could also just ask for the bearer token so it doesn't has to make the request for the token itself.
 
 ## Alternative/better solution
 
