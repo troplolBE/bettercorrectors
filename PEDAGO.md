@@ -68,7 +68,16 @@ code bellow by category.
 
 ### Internal working
 
+The problem here is that the **_scalte team_** endpoint contains a lot of information which takes a lot of time to gather 
+from the api. From my tests, a ft_ssl_md5 correction needs 3 seconds on my connection to be downloaded. (20Mbs download)
 
+The plan is to gather the id of all students of The Hive and to pass all of their ids into a function which will gather 
+all the scale teams they have benn involved in. This may take a lot of time but is I think the best solution to be sure 
+not to miss any data.
+
+Once we have all the user ids, we could get all the scale teams and we the process each one by one by keeping the strict
+minimum of information so that we do not work with too much data in RAM. Once the data is stored, our detection functions
+would do the rest and print the result to the user.
 
 ### User Interactions
 
