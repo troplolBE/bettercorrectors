@@ -11,21 +11,21 @@ base_url = 'https://api.intra.42.fr'
 
 def get_token(client_id, client_secret):
     client = BackendApplicationClient(client_id=client_id)
-    oauth = OAuth2Session(client=client)
-    token = oauth.fetch_token(token_url='https://api.intra.42.fr/oauth/token', client_id=client_id,
-                              client_secret=client_secret)
-    return token["access_token"]
+    session = OAuth2Session(client=client)
+    session.fetch_token(token_url='https://api.intra.42.fr/oauth/token', client_id=client_id,
+                        client_secret=client_secret)
+    return session
 
 
-def get_all_pages(url, token):
-    response = requests.get(f'{base_url}{url}', params={'page[size]': 30}, headers={"Authorization": f'Bearer {token}'})
+def get_all_pages(session, url, size):
+    response = session.request('GET', f'{base_url}{url}', params={'page[size]': size})
     info = response.json()
 
     for page in range(2, 100):
         print(page)
         if page > 2:
             time.sleep(0.5)
-        r = requests.get(f'{base_url}{url}', params={'page[number]': page, 'page[size]': 30}, headers={"Authorization": f'Bearer {token}'})
+        r = session.request('GET', f'{base_url}{url}', params={'page[number]': page, 'page[size]': size})
         if r.text == '[]' or r.text == '{}':
             break
         infos = r.json()
@@ -38,19 +38,15 @@ def get_all_pages(url, token):
 
 def main():
     # Here we make sure there is at least one argument
-    if len(sys.argv) < 2:
-        print("Please provide some parameters to the program")
+    if len(sys.argv) != 3:
+        print("Please provide client_id and client_secret.")
         exit(1)
 
     # for testing purpose
     if len(sys.argv) == 3:
-        token = get_token(sys.argv[1], sys.argv[2])
-        exit(1)
-    else:
-        token = sys.argv[1]
-    print(token)
+        session = get_token(sys.argv[1], sys.argv[2])
 
-    users = get_all_pages('/v2/coalitions/52/users', token)
+    users = get_all_pages(session, '/v2/coalitions/52/users', 100)
     print(users)
 
     for user in users:
