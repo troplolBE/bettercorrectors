@@ -30,10 +30,15 @@ or didn't see a big problem in the code.
 This case needs to be moderated and reconsidered before taking action on the bad student because some projects could be hard to detect anomalies especially
 if the corrector didn't do the project. Again, issues such a norm errors etc should always be seen no matter the student.
 
-Example 
+Example:
 ```text
 Thomas corrected Jens on his ft_printf 100 but moulinette graded Jens 50 because Jens did not implement the float converter which was asked in the pdf.
 ```
+
+What is needed to detect this case ?
+- grade of the evaluation
+- final grade of the project
+- flag given during the evaluation
 
 ### Case 2
 If the corrector gives a good grade on a project but the corrected cancels his project it may be because the corrector 
@@ -47,6 +52,10 @@ Example:
 Thomas corrected Jens on his minishell where ctrl+c does not make the prompt reappear as it should.
 ```
 
+What is needed to detect this case ?
+- grade of the evaluation
+- final grade of the project
+
 ### Case 3
 This case only applies to big projects, it would otherwise be very hard to calibrate on small projects. Corrections can 
 sometimes be very long for some projects and some students may simply skip some parts of the correction pdf to win some 
@@ -57,12 +66,21 @@ Example:
 Thomas corrected Jens on 42sh for only 20 minutes where a good correction of 42sh should last 1 hour.
 ```
 
+What is needed to detect this case ?
+- estimated duration of the evaluation
+- start time of evaluation
+- end time of evaluation
+- number of project retrys
+
 ### Case 4
 In this case there is not too much to discuss. If the corrected booked 2 corrections at the same moment and the correctors
 accepted to do them both at the same time, then both correctors and the corrected should be sanctioned.
 
 Double corrections may interfere with the capability of one corrector to find an error in the code or to be to shy to 
 say something if the other corrector takes too much space.
+
+What is needed to detect this case ?
+- time of booking evaluation
 
 ## How to detect
 
