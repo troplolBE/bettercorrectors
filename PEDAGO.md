@@ -1,11 +1,11 @@
 # PEDGAO
 
-Small document which is going to describe the way I worked on the project, my toughts and my reflexions during the codig process.
+Small document which is going to describe the way I worked on the project, my thoughts and my reflexions during the codig process.
 
 ## Disclaimer
 
-_This document contains all my toughts and the way I processed during the development of the program. Dome of the things 
-listed below may not be in the code or may be completely different but I decided nt to remove anything for educational 
+_This document contains all my thoughts and the way I processed during the development of the program. Dome of the things 
+listed below may not be in the code or may be completely different but I decided not to remove anything for educational 
 purpose. For real working of the code please refer to the comment in the code itself which are complete and comment the 
 final code_
 
@@ -109,6 +109,10 @@ increase the process speed and reduce wait time. After some research I found out
 parameter to only grab what I need in the imposed timeframe. This is going to make life a lot easier and programs a lot
 faster due to less requests to do.
 
+So for now, the program is going to ask for the timeframe in which it is supposed to search for 'bad evaluations'. The 
+program then runs through all the api call and the transforms the gathered data. Results are shown on the screen and stored
+in a file or database.
+
 ### User Interactions
 
 For the user interactions I first tought that the best solution to do it is to use a command line program. Efficient and
@@ -129,8 +133,6 @@ In command line it would be first, second and third argument:
 - third -> time
 
 Or use a config file for both possibilities.
-
-Program could also just ask for the bearer token so it doesn't has to make the request for the token itself.
 
 ## Alternative/better solution
 
