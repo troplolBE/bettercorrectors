@@ -2,6 +2,13 @@
 
 Small document which is going to describe the way I worked on the project, my toughts and my reflexions during the codig process.
 
+## Disclaimer
+
+_This document contains all my toughts and the way I processed during the development of the program. Dome of the things 
+listed below may not be in the code or may be completely different but I decided nt to remove anything for educational 
+purpose. For real working of the code please refer to the comment in the code itself which are complete and comment the 
+final code_
+
 ## Definition of a bad evaluation
 
 First of all, what is a bad evaluation ? I see the following scenarios:
