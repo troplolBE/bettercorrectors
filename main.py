@@ -23,28 +23,31 @@ def get_token(client_id, client_secret):
     return session
 
 
-def get_all_pages(session, url, size):
+def get_all_pages(session, url, size, params=None):
     """Get the data on all pages of a specified url with pagesize size
 
     :param session: the OAuth2Sesion
     :param url: url where to do the request
     :param size: size of the page that gets returned
+    :param params: parameters for the url
     :return: info
     """
-    response = session.request('GET', f'{base_url}{url}', params={'page[size]': size})
+    parameters = {'page[size]': size}
+    if params is not None:
+        parameters.update(params)
+    response = session.get(f'{base_url}{url}', params=parameters)
+    entries = int(response.headers['X-Total'])
+    pages = int(entries / size) + (entries % size > 1)
     info = response.json()
 
-    for page in range(2, 100):
-        print(page)
-        if page > 2:
-            time.sleep(0.5)
-        r = session.request('GET', f'{base_url}{url}', params={'page[number]': page, 'page[size]': size})
-        if r.text == '[]' or r.text == '{}':
-            break
-        infos = r.json()
-        print(infos)
-        for inf in infos:
-            info += inf
+    if pages > 1:
+        for page in range(2, pages + 1):
+            parameters.update({'page[number]': page})
+            r = session.get(f'{base_url}{url}', params=parameters)
+            if r.status_code == 429:
+                time.sleep(round((60 - datetime.now().second) / 60, 2))
+                r = session.get(f'{base_url}{url}', params=parameters)
+            info += r.json()
 
     return info
 
@@ -59,7 +62,7 @@ def main():
     if len(sys.argv) == 3:
         session = get_token(sys.argv[1], sys.argv[2])
 
-    users = get_all_pages(session, '/v2/coalitions/52/users', 100)
+    users = get_all_pages(session, '/v2/coalitions/52/users', 30)
     print(users)
 
     for user in users:
