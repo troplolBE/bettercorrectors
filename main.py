@@ -5,6 +5,7 @@ from requests_oauthlib import OAuth2Session
 # general imports
 import sys
 import time
+from datetime import datetime
 
 base_url = 'https://api.intra.42.fr'  # base url for all requests made to the api
 
@@ -52,17 +53,46 @@ def get_all_pages(session, url, size, params=None):
     return info
 
 
+def format_dates(start, end=None):
+    """Function that returns the dates given by the user in ISO 8601 formato be passed as parameter in the request
+    to the api.
+
+    :param start: min value for the range, the latest date in xx/xx/xx format
+    :param end: max value for the range, the closest date in xx/xx/xx format
+    :return: dates formated in string for range parameter
+    """
+    mintime = datetime.strptime(start, '%d/%m/%Y').isoformat()
+    if end is None:
+        maxtime = datetime.now().isoformat()
+    else:
+        maxtime = datetime.strptime(end, '%d/%m/%Y').isoformat()
+    return f'{mintime},{maxtime}'
+
+
+def format_range(minval, maxval=None, date=False):
+    """Format value of range parameter more easily. Supports date formating to ISO 8601 format if date is set to True.
+
+    :param minval: min value of the range
+    :param maxval: max value of the range
+    :param date: if the parameters are dates or not
+    :return: formated string containing min,max
+    """
+    if date is True:
+        return format_dates(minval, maxval)
+    else:
+        return f'{minval},{maxval}'
+
+
 def main():
     # Here we make sure there is at least one argument
     if len(sys.argv) != 3:
         print("Please provide client_id and client_secret.")
         exit(1)
 
-    # for testing purpose
-    if len(sys.argv) == 3:
-        session = get_token(sys.argv[1], sys.argv[2])
+    session = get_token(sys.argv[1], sys.argv[2])
+    dates = {'range[created_at]': format_range('01/01/2018', '31/12/2018', True)}
 
-    users = get_all_pages(session, '/v2/coalitions/52/users', 30)
+    users = get_all_pages(session, '/v2/coalitions/52/users', 30, dates)
     print(users)
 
     for user in users:
