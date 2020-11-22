@@ -7,7 +7,7 @@ import sys
 import time
 from datetime import datetime
 
-base_url = 'https://api.intra.42.fr'  # base url for all requests made to the api
+base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
 
 
 def get_token(client_id, client_secret):
@@ -37,6 +37,9 @@ def get_all_pages(session, url, size, params=None):
     if params is not None:
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
+    if response.status_code == 404:
+        print('Not found :/')
+        return 'No results in query'
     entries = int(response.headers['X-Total'])
     pages = int(entries / size) + (entries % size > 1)
     info = response.json()
@@ -49,6 +52,20 @@ def get_all_pages(session, url, size, params=None):
                 time.sleep(round((60 - datetime.now().second) / 60, 2))
                 r = session.get(f'{base_url}{url}', params=parameters)
             info += r.json()
+
+    return info
+
+
+def get_single_page(session, url, size, params=None):
+    parameters = {'page[size]': size}
+    if params is not None:
+        parameters.update(params)
+    response = session.get(f'{base_url}{url}', params=parameters)
+    print(response.request.url)
+    if response.status_code == 404:
+        print('Not found :/', f'\nerror code {response.status_code}')
+        return 'No results in query'
+    info = response.json()
 
     return info
 
@@ -90,14 +107,17 @@ def main():
         exit(1)
 
     session = get_token(sys.argv[1], sys.argv[2])
-    dates = {'range[created_at]': format_range('01/01/2018', '31/12/2018', True)}
+    dates = {'range[created_at]': format_range('22/10/2020', '22/11/2020', True)}
+    dates2 = {'range[created_at]': format_range('22/02/2020', '22/11/2020', True)}
 
-    users = get_all_pages(session, '/v2/coalitions/52/users', 30, dates)
-    print(users)
+    scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 30, dates)
+    corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 1)
+    print(scales)
+    print(corrected)
 
-    for user in users:
-        if user['login'] == 'tcastron':
-            print(user)
+    #for user in scales:
+    #    if user['login'] == 'tcastron':
+    #        print(user)
 
 
 # Press the green button in the gutter to run the script.
