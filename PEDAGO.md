@@ -104,6 +104,11 @@ Once we have all the user ids, we could get all the scale teams and we the proce
 minimum of information so that we do not work with too much data in RAM. Once the data is stored, our detection functions
 would do the rest and print the result to the user.
 
+If we can filter and sort in the request we may be able to reduce the number of requests done to the api which will 
+increase the process speed and reduce wait time. After some research I found out that I can set a range on the 'created_at'
+parameter to only grab what I need in the imposed timeframe. This is going to make life a lot easier and programs a lot
+faster due to less requests to do.
+
 ### User Interactions
 
 For the user interactions I first tought that the best solution to do it is to use a command line program. Efficient and
