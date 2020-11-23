@@ -43,7 +43,7 @@ def get_all_pages(session, url, size, params=None):
         return 'No results in query'
     entries = int(response.headers['X-Total'])
     pages = int(entries / size) + (entries % size > 1)
-    info = response.json()
+    data = response.json()
 
     if pages > 1:
         for page in range(2, pages + 1):
@@ -52,9 +52,14 @@ def get_all_pages(session, url, size, params=None):
             if r.status_code == 429:
                 time.sleep(round((60 - datetime.now().second) / 60, 2))
                 r = session.get(f'{base_url}{url}', params=parameters)
-            info += r.json()
+            new_data = r.json()
+            try:
+                data += new_data
+            except json.JSONDecodeError:
+                print('Error when decoding json, please try again...')
+                exit(1)
 
-    return info
+    return data
 
 
 def get_single_page(session, url, size, params=None):
