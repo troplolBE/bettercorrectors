@@ -113,6 +113,16 @@ So for now, the program is going to ask for the timeframe in which it is suppose
 program then runs through all the api call and the transforms the gathered data. Results are shown on the screen and stored
 in a file or database.
 
+The logic behind everything would be like this:
+for each student:
+    for each evaluation as corrector in the last timeframe:
+        if bad:
+            create eval object
+            store object in list
+            continue
+        else:
+            continue
+
 ### User Interactions
 
 For the user interactions I first tought that the best solution to do it is to use a command line program. Efficient and
