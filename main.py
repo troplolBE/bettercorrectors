@@ -10,8 +10,8 @@ from datetime import datetime
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
 
 
-def get_token(client_id, client_secret):
-    """Method to get the OAuth2 session for further requests
+def get_session(client_id, client_secret):
+    """Method to get the OAuth2 session for all future requests
 
     :param client_id: the client_id of the backend application
     :param client_secret: the secret of the backend application
@@ -122,14 +122,15 @@ def main():
     dates = {'range[created_at]': format_range('22/10/2020', '22/11/2020', True)}
     dates2 = {'range[created_at]': format_range('22/02/2020', '22/11/2020', True)}
 
-    scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 30, dates)
-    corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 1)
-    print(scales)
-    print(corrected)
+    # nsondag = 35382 -- tcastron = 38492
+    dates.update({'sort[]': '-created_at'})
 
-    #for user in scales:
+    # for user in scales:
     #    if user['login'] == 'tcastron':
     #        print(user)
+
+    # scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 1, dates)
+    # print(json.dumps(scales, indent=4))
 
 
 # Press the green button in the gutter to run the script.
