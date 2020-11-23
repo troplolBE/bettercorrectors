@@ -119,8 +119,35 @@ def main():
         print("Please provide client_id and client_secret.")
         exit(1)
 
-    session = get_token(sys.argv[1], sys.argv[2])
-    dates = {'range[created_at]': format_range('22/10/2020', '22/11/2020', True)}
+    session = get_session(sys.argv[1], sys.argv[2])
+
+    corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 5, dates)
+    print(json.dumps(corrected, indent=4))
+
+    for corr in corrected:
+        print(corr['corrector']['login'])
+        print(corr['final_mark'])
+        print(corr['team']['final_mark'])
+        flags = corr['scale']['flags']
+        for flag in flags:
+            if flag['positive'] is True:
+                print(flag['name'])
+
+
+def trash():
+    """Funtion containing test I made that may be useful later
+
+    :return:
+    """
+    """
+    users = get_single_page(session, f'/users/38492', 1)
+    if users['staff?'] is False:
+        print('bite')
+    print(json.dumps(users, indent=2))
+    exit(1)
+    """
+
+    dates = {'range[created_at]': format_range('18/10/2018', '19/10/2018', True)}
     dates2 = {'range[created_at]': format_range('22/02/2020', '22/11/2020', True)}
 
     # nsondag = 35382 -- tcastron = 38492
@@ -137,4 +164,3 @@ def main():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
-
