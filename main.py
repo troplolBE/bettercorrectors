@@ -70,6 +70,18 @@ def get_single_page(session, url, size, params=None):
     return info
 
 
+def get_campus_students(session, id):
+    parameters = {'filter[staff?]': False}
+    allusers = get_all_pages(session, f'/campus/{id}/users', 100, params=parameters)
+    ids = []
+    for user in allusers:
+        if not user['login'].startswith('3b3-'):
+            print(user)
+            ids.append(user['id'])
+
+    return ids
+
+
 def format_dates(start, end=None):
     """Function that returns the dates given by the user in ISO 8601 formato be passed as parameter in the request
     to the api.
