@@ -5,6 +5,7 @@ from requests_oauthlib import OAuth2Session
 # general imports
 import sys
 import time
+import json
 from datetime import datetime
 
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
