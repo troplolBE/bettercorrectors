@@ -63,7 +63,7 @@ def get_all_pages(session, url, size, params=None):
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
     if response.status_code == 429:
-        time.sleep(round((60 - datetime.now().second) / 60, 2))
+        time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
         response = session.get(f'{base_url}{url}', params=parameters)
     check_status_code(response.status_code)
     entries = int(response.headers['X-Total'])
@@ -75,7 +75,7 @@ def get_all_pages(session, url, size, params=None):
             parameters.update({'page[number]': page})
             r = session.get(f'{base_url}{url}', params=parameters)
             if r.status_code == 429:
-                time.sleep(round((60 - datetime.now().second) / 60, 2))
+                time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
                 r = session.get(f'{base_url}{url}', params=parameters)
             check_status_code(r.status_code)
             try:
@@ -105,7 +105,7 @@ def get_single_page(session, url, size, params=None):
     response = session.get(f'{base_url}{url}', params=parameters)
     check_status_code(response.status_code)
     if response.status_code == 429:
-        time.sleep(round((60 - datetime.now().second) / 60, 2))
+        time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
         response = session.get(f'{base_url}{url}', params=parameters)
     return response.json()
 
