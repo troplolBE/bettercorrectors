@@ -6,7 +6,9 @@ from requests_oauthlib import OAuth2Session
 import sys
 import time
 import json
-from datetime import datetime
+
+from rules import *
+from bad_evaluation import *
 
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
 
@@ -176,6 +178,31 @@ def format_range(minval, maxval=None, date=False):
         return format_dates(minval, maxval)
     else:
         return f'{minval},{maxval}'
+
+
+def detect_bad_eval(evaluation):
+    rules = [rule1, rule2]
+
+    for index, rule in enumerate(rules):
+        if rule(evaluation):
+            return create_bad_eval(evaluation, index)
+    return False
+
+
+def check_evaluations(session, dates):
+    users_ids = get_campus_students(session, 13)
+    bad_evals = []
+
+    for user_id in users_ids:
+        evaluations = get_all_pages(session, f'/users/{user_id}/scale_teams/as_corrected', 100, params=dates)
+        if evaluations == '[]' or evaluations == 'Not found :/':
+            continue
+        for evaluation in evaluations:
+            bad = detect_bad_eval(evaluation)
+            if not bad:
+                bad_evals.append(bad)
+
+    return bad_evals
 
 
 def main():
