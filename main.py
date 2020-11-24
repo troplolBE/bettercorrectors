@@ -147,7 +147,7 @@ def trash():
     """
     users = get_single_page(session, f'/users/38492', 1)
     if users['staff?'] is False:
-        print('bite')
+        print(users)
     print(json.dumps(users, indent=2))
     exit(1)
     """
