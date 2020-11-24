@@ -168,16 +168,16 @@ def detect_bad_eval(evaluation):
 
 
 def check_evaluations(session, dates):
-    users_ids = get_campus_students(session, 13)
+    user_ids = get_campus_students(session, 13)
     bad_evals = []
 
-    for user_id in users_ids:
+    for user_id in user_ids:
         evaluations = get_all_pages(session, f'/users/{user_id}/scale_teams/as_corrected', 100, params=dates)
-        if evaluations == '[]' or evaluations == 'Not found :/':
+        if evaluations == '[]':
             continue
         for evaluation in evaluations:
             bad = detect_bad_eval(evaluation)
-            if not bad:
+            if isinstance(bad, BadEvaluation):
                 bad_evals.append(bad)
 
     return bad_evals
@@ -191,17 +191,16 @@ def main():
 
     session = get_session(sys.argv[1], sys.argv[2])
 
-    corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 5, dates)
-    print(json.dumps(corrected, indent=4))
+    dates = {'range[begin_at]': format_range('18/10/2018', '19/10/2018', True)}
+    dates.update({'sort[]': '-created_at'})
 
-    for corr in corrected:
-        print('id=', corr['id'])
-        print('corrector={}, corrected_id={}'.format(corr['corrector']['login'], corr['corrector']['id']))
-        correcteds = corr['correcteds']
-        for corrected in correcteds:
-            print('corrected={}, corrected_id={}'.format(corrected['login'], corrected['id']))
-        print('time=', corr['created_at'])
-        print('project=', corr['team']['project_id'])
+    # corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 5, dates)
+    # print(json.dumps(corrected, indent=4))
+
+    bad_evals = check_evaluations(session, dates)
+    for bad_eval in bad_evals:
+        bad_eval.print()
+        del bad_eval
 
 
 # Press the green button in the gutter to run the script.
