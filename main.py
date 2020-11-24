@@ -53,6 +53,21 @@ def get_session(client_id, client_secret):
     return session
 
 
+def check_status_code(status_code):
+    if status_code == 200:
+        return
+    elif status_code == 400:
+        print('ERROR: The request is malformed.')
+    elif status_code == 404:
+        print('ERROR: Page or ressource not found, check endpoint and request.')
+    elif status_code == 500:
+        print('ERROR: server had an error.')
+    else:
+        print('ERROR: unknow error.')
+    print('ERROR: program stopped because of request errors.')
+    exit(1)
+
+
 def get_all_pages(session, url, size, params=None):
     """Get the data on all pages of a specified url with pagesize size
 
@@ -66,10 +81,10 @@ def get_all_pages(session, url, size, params=None):
     if params is not None:
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
-    print(response.status_code, response.reason)
-    if response.status_code != 200:
-        print('Not found :/')
-        return 'No results in query'
+    if response.status_code == 429:
+        time.sleep(round((60 - datetime.now().second) / 60, 2))
+        response = session.get(f'{base_url}{url}', params=parameters)
+    check_status_code(response.status_code)
     entries = int(response.headers['X-Total'])
     pages = int(entries / size) + (entries % size > 1)
     data = response.json()
@@ -81,6 +96,7 @@ def get_all_pages(session, url, size, params=None):
             if r.status_code == 429:
                 time.sleep(round((60 - datetime.now().second) / 60, 2))
                 r = session.get(f'{base_url}{url}', params=parameters)
+            check_status_code(r.status_code)
             new_data = r.json()
             try:
                 data += new_data
@@ -104,9 +120,10 @@ def get_single_page(session, url, size, params=None):
     if params is not None:
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
-    if response.status_code != 200 or response.json() == '[]':
-        print('Not found :/', f'\nerror code {response.status_code}')
-        return 'No results in query'
+    check_status_code(response.status_code)
+    if response.status_code == 429:
+        time.sleep(round((60 - datetime.now().second) / 60, 2))
+        response = session.get(f'{base_url}{url}', params=parameters)
     return response.json()
 
 
