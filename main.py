@@ -97,8 +97,10 @@ def get_all_pages(session, url, size, params=None):
                 time.sleep(round((60 - datetime.now().second) / 60, 2))
                 r = session.get(f'{base_url}{url}', params=parameters)
             check_status_code(r.status_code)
-            new_data = r.json()
             try:
+                new_data = r.json()
+                if new_data == '[]':
+                    continue
                 data += new_data
             except json.JSONDecodeError:
                 print('Error when decoding json, please try again...')
