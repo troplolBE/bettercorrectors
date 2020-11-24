@@ -38,7 +38,8 @@ def get_all_pages(session, url, size, params=None):
     if params is not None:
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
-    if response.status_code == 404:
+    print(response.status_code, response.reason)
+    if response.status_code != 200:
         print('Not found :/')
         return 'No results in query'
     entries = int(response.headers['X-Total'])
@@ -67,8 +68,7 @@ def get_single_page(session, url, size, params=None):
     if params is not None:
         parameters.update(params)
     response = session.get(f'{base_url}{url}', params=parameters)
-    print(response.request.url)
-    if response.status_code == 404:
+    if response.status_code != 200 or response.json() == '[]':
         print('Not found :/', f'\nerror code {response.status_code}')
         return 'No results in query'
     info = response.json()
