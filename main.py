@@ -28,6 +28,12 @@ def get_session(client_id, client_secret):
 
 
 def check_status_code(status_code):
+    """Checks the status code of the request and quits if it is not 200.
+    Also prints an error message in the console
+
+    :param status_code: status code of the request
+    :return: nothing
+    """
     if status_code == 200:
         return
     elif status_code == 400:
@@ -38,6 +44,7 @@ def check_status_code(status_code):
         print('ERROR: server had an error.')
     else:
         print('ERROR: unknow error.')
+    print(f'ERROR: code is {status_code}')
     print('ERROR: program stopped because of request errors.')
     exit(1)
 
