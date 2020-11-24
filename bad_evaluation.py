@@ -45,7 +45,7 @@ class BadEvaluation:
         print(f'bad evaluation: {self.corrector}({self.correctorid}) ', end='')
         print(f'corrected {self.corrected}({self.correctedid})\'s {self.project} ', end='')
         print(f'on {self.date.month} {self.date.day} {self.date.year} at {self.date.hour}:{self.date.minute} ', end='')
-        print(f'and it was considered bad by rule number {self.detection}.', end='')
+        print(f'and it was considered bad by rule number {self.detection}.')
 
 
 def create_bad_eval(evaluation, rule):
