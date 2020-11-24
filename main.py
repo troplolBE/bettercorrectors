@@ -92,6 +92,14 @@ def get_all_pages(session, url, size, params=None):
 
 
 def get_single_page(session, url, size, params=None):
+    """Make a resquest to the api and only grab one page
+
+    :param session: the authenticated OAuth2 session
+    :param url: endpoint where to do the request
+    :param size: size of the page that you get (1-100)
+    :param params: more paramters that you would like to pass to the request
+    :return: the data from your request
+    """
     parameters = {'page[size]': size}
     if params is not None:
         parameters.update(params)
@@ -99,16 +107,21 @@ def get_single_page(session, url, size, params=None):
     if response.status_code != 200 or response.json() == '[]':
         print('Not found :/', f'\nerror code {response.status_code}')
         return 'No results in query'
-    info = response.json()
-
-    return info
+    return response.json()
 
 
-def get_campus_students(session, id):
+def get_campus_students(session, school):
+    """Function that returns all the unique ids of all the non-anonymized students of the school
+    passed as parameter.
+
+    :param session: OAuth2 session
+    :param school: unique id of a 42 school
+    :return: dict of ids
+    """
     parameters = {'filter[staff?]': False}
-    allusers = get_all_pages(session, f'/campus/{id}/users', 100, params=parameters)
+    users = get_all_pages(session, f'/campus/{school}/users', 100, params=parameters)
     ids = []
-    for user in allusers:
+    for user in users:
         if not user['login'].startswith('3b3-'):
             print(user)
             ids.append(user['id'])
