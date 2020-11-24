@@ -18,14 +18,14 @@ class BadEvaluation:
                  time=None, project=None):
         """Construct a new BadEvaluation object
 
-        :param scale_id: scale id of the scale_team
-        :param corrector: login of the corrector
-        :param correctorid: id of the corrector
-        :param corrected: login of the corrected
-        :param correctedid: id of the corrected
-        :param detection: number of the rule that detected the bad evaluation
-        :param time: time at which the evaluation started
-        :param project: number of the project (ex: 1 -> libft)
+        :param int scale_id: scale id of the scale_team
+        :param str corrector: login of the corrector
+        :param int correctorid: id of the corrector
+        :param str corrected: login of the corrected
+        :param int correctedid: id of the corrected
+        :param int detection: number of the rule that detected the bad evaluation
+        :param str time: time at which the evaluation started
+        :param int project: number of the project (ex: 1 -> libft)
         """
         self.scale_id = scale_id
         self.corrector = corrector
@@ -35,23 +35,26 @@ class BadEvaluation:
         self.detection = detection
         self.time = time
         self.project = project
-        self.date = datetime.fromisoformat(time)
+        self.date = datetime.now()
+
+    def set_date(self):
+        """Set date variable to avoid error in __init__"""
+        self.date = datetime.fromisoformat(self.time[:-1])
 
     def print(self):  # bad eval: nsondag corrected tcastron's 42sh on time and it was detected bad by rule number
-        print(f'bad evaluation: {self.corrector}({self.correctorid}) ')
-        print(f'corrected {self.corrected}({self.correctedid})\'s {self.project} ')
-        print(f'on {self.time.month} {self.time.day} {self.time.year} at {self.time.hour}:{self.time.minute} ')
-        print(f'and it was considered bad by rule number {self.detection}.')
+        print(f'bad evaluation: {self.corrector}({self.correctorid}) ', end='')
+        print(f'corrected {self.corrected}({self.correctedid})\'s {self.project} ', end='')
+        print(f'on {self.date.month} {self.date.day} {self.date.year} at {self.date.hour}:{self.date.minute} ', end='')
+        print(f'and it was considered bad by rule number {self.detection}.', end='')
 
 
 def create_bad_eval(evaluation, rule):
     """Create a BadEvaluation object based on the evaluation passed as argument
 
     :param evaluation: evaluation which has been detected as bad (scale_team endpoint)
-    :param rule: number of the rule that detected the bad evaluation
+    :param int rule: number of the rule that detected the bad evaluation
     :return: BadEvaluation object
     """
-    print('|', evaluation, '|')
     bad = BadEvaluation(int(evaluation['id']))
     bad.corrector = evaluation['corrector']['login']
     bad.correctorid = evaluation['corrector']['id']
@@ -60,4 +63,5 @@ def create_bad_eval(evaluation, rule):
     bad.detection = rule
     bad.time = evaluation['begin_at']
     bad.project = evaluation['team']['project_id']
+    bad.set_date()
     return bad
