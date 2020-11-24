@@ -10,6 +10,34 @@ from datetime import datetime
 
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
 
+"""
+list of needed things to show to user:
+- scale id
+- login corrector
+- login corrected
+- number detection rule
+- time
+"""
+
+
+class BadEvaluation:
+    def __init__(self, scale_id, corrector=None, correctorid=None, corrected=None, correctedid=None, detection=None, time=None, project=None):
+        self.scale_id = scale_id
+        self.corrector = corrector
+        self.correctorid = correctorid
+        self.corrected = corrected
+        self.correctedid = correctedid
+        self.detection = detection
+        self.time = time
+        self.project = project
+        self.date = datetime.fromisoformat(time)
+
+    def print(self):  # bad eval: nsondag corrected tcastron's 42sh on time and it was detected bad by rule number
+        print(f'bad evaluation: {self.corrector}({self.correctorid}) ')
+        print(f'corrected {self.corrected}({self.correctedid})\'s {self.project} ')
+        print(f'on {self.time.month} {self.time.day} {self.time.year} at {self.time.hour}:{self.time.minute} ')
+        print(f'and it was considered bad by rule number {self.detection}')
+
 
 def get_session(client_id, client_secret):
     """Method to get the OAuth2 session for all future requests
