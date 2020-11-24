@@ -1,0 +1,36 @@
+    """
+    users = get_single_page(session, f'/users/38492', 1)
+    if users['staff?'] is False:
+        print(users)
+    print(json.dumps(users, indent=2))
+    exit(1)
+    """
+
+
+dates = {'range[created_at]': format_range('18/10/2018', '19/10/2018', True)}
+dates2 = {'range[created_at]': format_range('22/02/2020', '22/11/2020', True)}
+
+# nsondag = 35382 -- tcastron = 38492
+dates.update({'sort[]': '-created_at'})
+
+# moi = get_single_page(session, '/users/38492/scale_teams/as_corrected?filter[scale_id]=826', 100)
+# print(moi)
+# exit(1)
+
+# project = get_single_page(session, '/projects/1', 1)
+# print(project)
+# exit(1)
+
+""" gather all the flags
+flags = corr['scale']['flags']
+for flag in flags:
+    if flag['positive'] is True:
+        print(flag['name'])
+"""
+
+# for user in scales:
+#    if user['login'] == 'tcastron':
+#        print(user)
+
+# scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 1, dates)
+# print(json.dumps(scales, indent=4))

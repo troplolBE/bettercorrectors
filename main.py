@@ -158,40 +158,13 @@ def main():
     print(json.dumps(corrected, indent=4))
 
     for corr in corrected:
-        print(corr['corrector']['login'])
-        print(corr['final_mark'])
-        print(corr['team']['final_mark'])
-        flags = corr['scale']['flags']
-        for flag in flags:
-            if flag['positive'] is True:
-                print(flag['name'])
-
-
-def trash():
-    """Funtion containing test I made that may be useful later
-
-    :return:
-    """
-    """
-    users = get_single_page(session, f'/users/38492', 1)
-    if users['staff?'] is False:
-        print(users)
-    print(json.dumps(users, indent=2))
-    exit(1)
-    """
-
-    dates = {'range[created_at]': format_range('18/10/2018', '19/10/2018', True)}
-    dates2 = {'range[created_at]': format_range('22/02/2020', '22/11/2020', True)}
-
-    # nsondag = 35382 -- tcastron = 38492
-    dates.update({'sort[]': '-created_at'})
-
-    # for user in scales:
-    #    if user['login'] == 'tcastron':
-    #        print(user)
-
-    # scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 1, dates)
-    # print(json.dumps(scales, indent=4))
+        print('id=', corr['id'])
+        print('corrector={}, corrected_id={}'.format(corr['corrector']['login'], corr['corrector']['id']))
+        correcteds = corr['correcteds']
+        for corrected in correcteds:
+            print('corrected={}, corrected_id={}'.format(corrected['login'], corrected['id']))
+        print('time=', corr['created_at'])
+        print('project=', corr['team']['project_id'])
 
 
 # Press the green button in the gutter to run the script.
