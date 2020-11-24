@@ -44,7 +44,8 @@ class BadEvaluation:
     def print(self):  # bad eval: nsondag corrected tcastron's 42sh on time and it was detected bad by rule number
         print(f'bad evaluation: {self.corrector}({self.correctorid}) ', end='')
         print(f'corrected {self.corrected}({self.correctedid})\'s {self.project} ', end='')
-        print(f'on {self.date.month} {self.date.day} {self.date.year} at {self.date.hour}:{self.date.minute} ', end='')
+        print(f'on {self.date.strftime("%b")} {self.date.day} {self.date.year} ', end='')
+        print(f'at {self.date.hour}:{self.date.strftime("%M")} ', end='')
         print(f'and it was considered bad by rule number {self.detection}.')
 
 

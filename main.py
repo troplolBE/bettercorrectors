@@ -121,6 +121,7 @@ def get_campus_students(session, school):
     parameters = {'filter[staff?]': False}
     users = get_all_pages(session, f'/campus/{school}/users', 100, params=parameters)
     ids = []
+
     for user in users:
         if not user['login'].startswith('3b3-'):
             ids.append(user['id'])
@@ -161,7 +162,7 @@ def format_range(minval, maxval=None, date=False):
 def detect_bad_eval(evaluation):
     rules = [rule1, rule2]
 
-    for index, rule in enumerate(rules):
+    for index, rule in enumerate(rules, 1):
         if rule(evaluation):
             return create_bad_eval(evaluation, index)
     return False
@@ -198,9 +199,12 @@ def main():
     # print(json.dumps(corrected, indent=4))
 
     bad_evals = check_evaluations(session, dates)
-    for bad_eval in bad_evals:
-        bad_eval.print()
-        del bad_eval
+    if bad_evals is []:
+        print('No bad evaluations, your students are good correctors!')
+    else:
+        for bad_eval in bad_evals:
+            bad_eval.print()
+            del bad_eval
 
 
 # Press the green button in the gutter to run the script.
