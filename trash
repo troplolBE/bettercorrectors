@@ -36,4 +36,11 @@ for flag in flags:
 #        print(user)
 
 # scales = get_all_pages(session, '/users/38492/scale_teams/as_corrector', 1, dates)
-# print(json.dumps(scales, indent=4))
+# print(json.dumps(scales, indent=4))\
+
+- compile pas
+- crash
+- temps de la correction
+- plusieurs corrections finissent en meme temps
+- correction trop longue
+- pas d'impact sur le cursus
