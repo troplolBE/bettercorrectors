@@ -7,7 +7,7 @@ import sys
 import time
 import json
 
-from rules import *
+from rules import detect_bad_eval
 from bad_evaluation import *
 
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
@@ -159,15 +159,6 @@ def format_range(minval, maxval=None, date=False):
         return f'{minval},{maxval}'
 
 
-def detect_bad_eval(evaluation):
-    rules = [rule1, rule2]
-
-    for index, rule in enumerate(rules, 1):
-        if rule(evaluation):
-            return create_bad_eval(evaluation, index)
-    return False
-
-
 def check_evaluations(session, dates):
     user_ids = get_campus_students(session, 13)
     bad_evals = []
@@ -199,7 +190,7 @@ def main():
     # print(json.dumps(corrected, indent=4))
 
     bad_evals = check_evaluations(session, dates)
-    if bad_evals is []:
+    if not bool(bad_evals):
         print('No bad evaluations, your students are good correctors!')
     else:
         for bad_eval in bad_evals:
