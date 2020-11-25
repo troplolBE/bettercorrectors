@@ -142,7 +142,7 @@ def format_range(minval, maxval=None, date=False):
         if maxval is None:
             maxtime = datetime.now().isoformat()
         else:
-            maxtime = datetime.strptime(end, '%d/%m/%Y').isoformat()
+            maxtime = datetime.strptime(maxval, '%d/%m/%Y').isoformat()
         return f'{mintime},{maxtime}'
     else:
         return f'{minval},{maxval}'
