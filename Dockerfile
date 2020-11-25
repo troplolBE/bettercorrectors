@@ -7,7 +7,7 @@ LABEL description='container that runs the bettercorrecors program'
 WORKDIR /bettercorrectors
 
 COPY requirements.txt .
-COPY *.py .
+COPY *.py ./
 
 RUN pip install -r requirements.txt
 
