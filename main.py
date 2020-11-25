@@ -16,9 +16,9 @@ base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the
 def get_session(client_id, client_secret):
     """Method to get the OAuth2 session for all future requests
 
-    :param client_id: the client_id of the backend application
-    :param client_secret: the secret of the backend application
-    :return session
+    :param str client_id: the client_id of the backend application
+    :param str client_secret: the secret of the backend application
+    :return: session
     """
     client = BackendApplicationClient(client_id=client_id)
     session = OAuth2Session(client=client)
@@ -31,11 +31,11 @@ def check_status_code(status_code):
     """Checks the status code of the request and quits if it is not 200.
     Also prints an error message in the console
 
-    :param status_code: status code of the request
+    :param int status_code: status code of the request
     :return: nothing
     """
     if status_code == 200:
-        return
+        return True
     elif status_code == 400:
         print('ERROR: The request is malformed.')
     elif status_code == 404:
@@ -52,11 +52,11 @@ def check_status_code(status_code):
 def get_all_pages(session, url, size, params=None):
     """Get the data on all pages of a specified url with pagesize size
 
-    :param session: the OAuth2Sesion
-    :param url: url where to do the request
-    :param size: size of the page that gets returned
+    :param OAuth2Session session: the OAuth2Sesion
+    :param str url: url where to do the request
+    :param int size: size of the page that gets returned
     :param params: parameters for the url
-    :return: info
+    :return: all the data from all the requests made
     """
     parameters = {'page[size]': size}
     if params is not None:
@@ -91,11 +91,11 @@ def get_all_pages(session, url, size, params=None):
 
 
 def get_single_page(session, url, size, params=None):
-    """Make a resquest to the api and only grab one page
+    """Make a request to the api and only grab one page
 
-    :param session: the authenticated OAuth2 session
-    :param url: endpoint where to do the request
-    :param size: size of the page that you get (1-100)
+    :param OAuth2Session session: the authenticated OAuth2 session
+    :param str url: endpoint where to do the request
+    :param int size: size of the page that you get (1-100)
     :param params: more paramters that you would like to pass to the request
     :return: the data from your request
     """
@@ -114,9 +114,9 @@ def get_campus_students(session, school):
     """Function that returns all the unique ids of all the non-anonymized students of the school
     passed as parameter.
 
-    :param session: OAuth2 session
-    :param school: unique id of a 42 school
-    :return: dict of ids
+    :param OAuth2Session session: OAuth2 session
+    :param int school: unique id of a 42 school
+    :return: dict of student ids
     """
     parameters = {'filter[staff?]': False}
     users = get_all_pages(session, f'/campus/{school}/users', 100, params=parameters)
@@ -133,8 +133,8 @@ def format_dates(start, end=None):
     """Function that returns the dates given by the user in ISO 8601 formato be passed as parameter in the request
     to the api.
 
-    :param start: min value for the range, the latest date in xx/xx/xx format
-    :param end: max value for the range, the closest date in xx/xx/xx format
+    :param str start: min value for the range, the latest date in xx/xx/xx format
+    :param str end: max value for the range, the closest date in xx/xx/xx format
     :return: dates formated in string for range parameter
     """
     mintime = datetime.strptime(start, '%d/%m/%Y').isoformat()
@@ -150,7 +150,7 @@ def format_range(minval, maxval=None, date=False):
 
     :param minval: min value of the range
     :param maxval: max value of the range
-    :param date: if the parameters are dates or not
+    :param bool date: if the parameters are dates or not
     :return: formated string containing min,max
     """
     if date is True:
@@ -160,9 +160,18 @@ def format_range(minval, maxval=None, date=False):
 
 
 def check_evaluations(session, dates):
+    """Function that is going to iterate over all the evaluations of every student from a give campus
+    in the give time period. The evaluations are run against a set of rules that are available
+    in the rules.py file.
+
+    :param OAuth2Session session: the session to make requests
+    :param dict dates: date interval in which the program needs to search
+    :return: dict of bad evaluations
+    """
     user_ids = get_campus_students(session, 13)
     bad_evals = []
 
+    print(f'found {len(user_ids)} students !')
     for user_id in user_ids:
         evaluations = get_all_pages(session, f'/users/{user_id}/scale_teams/as_corrected', 100, params=dates)
         if evaluations == '[]':
