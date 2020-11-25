@@ -9,17 +9,45 @@ The definition of a bad evaluation is strictly personnal and could not fit your 
 ## Installation
 
 Download the repo using git.
-
 ```bash
-git clone https://gihub.com/troplolBE/ThePunisher.git
+git clone https://gihub.com/troplolBE/bettercorrectors.git
 ```
 
-Use pip to install the requirements
+Go inside of the directory.
+```bash
+cd bettercorrectors
+```
+
+## Usage
+
+You can use the program with or without docker.
+
+### With docker
+
+First build the container.
+```bash
+docker build --tag bettercorrimg .
+```
+
+If everything went well you can now run the container.
+```bash
+docker run --rm --name bettercorrectors -v ~/result:/result bettercorrimg <params_for_program>
+```
+
+### Without docker
+
+In case you don't want to run the program in a container, you can perfectly run it on your normal computer.
+
+Install all packages using pip.
+
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+Run the program like this.
+```bash
+python3 main.py <params_for_program>
+```
 
 ## Documentation
 Document containing all the references and links to docs I used for the project.
