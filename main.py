@@ -129,22 +129,6 @@ def get_campus_students(session, school):
     return ids
 
 
-def format_dates(start, end=None):
-    """Function that returns the dates given by the user in ISO 8601 formato be passed as parameter in the request
-    to the api.
-
-    :param str start: min value for the range, the latest date in xx/xx/xx format
-    :param str end: max value for the range, the closest date in xx/xx/xx format
-    :return: dates formated in string for range parameter
-    """
-    mintime = datetime.strptime(start, '%d/%m/%Y').isoformat()
-    if end is None:
-        maxtime = datetime.now().isoformat()
-    else:
-        maxtime = datetime.strptime(end, '%d/%m/%Y').isoformat()
-    return f'{mintime},{maxtime}'
-
-
 def format_range(minval, maxval=None, date=False):
     """Format value of range parameter more easily. Supports date formating to ISO 8601 format if date is set to True.
 
@@ -154,7 +138,12 @@ def format_range(minval, maxval=None, date=False):
     :return: formated string containing min,max
     """
     if date is True:
-        return format_dates(minval, maxval)
+        mintime = datetime.strptime(minval, '%d/%m/%Y').isoformat()
+        if maxval is None:
+            maxtime = datetime.now().isoformat()
+        else:
+            maxtime = datetime.strptime(end, '%d/%m/%Y').isoformat()
+        return f'{mintime},{maxtime}'
     else:
         return f'{minval},{maxval}'
 
