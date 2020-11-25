@@ -17,6 +17,9 @@ dates.update({'sort[]': '-created_at'})
 # print(moi)
 # exit(1)
 
+# corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 5, dates)
+# print(json.dumps(corrected, indent=4))
+
 # project = get_single_page(session, '/projects/1', 1)
 # print(project)
 # exit(1)

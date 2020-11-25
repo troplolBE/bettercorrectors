@@ -184,9 +184,6 @@ def main():
     dates = {'range[begin_at]': format_range('18/10/2018', '19/10/2018', True)}
     dates.update({'sort[]': '-created_at'})
 
-    # corrected = get_single_page(session, '/users/38492/scale_teams/as_corrected', 5, dates)
-    # print(json.dumps(corrected, indent=4))
-
     bad_evals = check_evaluations(session, dates)
     if not bool(bad_evals):
         print('No bad evaluations, your students are good correctors!')
