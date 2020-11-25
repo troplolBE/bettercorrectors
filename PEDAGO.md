@@ -91,6 +91,13 @@ Is there a different way to do it without using the api ?
 All those questions came through my mind when I started the project. I described my toughts on different aspects of the
 code bellow by category.
 
+The system I use is a set of rules that are each declared as a function which will return true in case the given evaluation
+is considered bad by this rule. Very easy to add a lot more, and you oby have to add the function in the function array 
+and it is automatically integrated to the whole detection process.
+
+The big advantage of this system is that a rule could very easily be updated and improved without giving the full 
+code to someone else.
+
 ### Internal working
 
 The problem here is that the **_scalte team_** endpoint contains a lot of information which takes a lot of time to gather 
@@ -107,21 +114,29 @@ would do the rest and print the result to the user.
 If we can filter and sort in the request we may be able to reduce the number of requests done to the api which will 
 increase the process speed and reduce wait time. After some research I found out that I can set a range on the 'created_at'
 parameter to only grab what I need in the imposed timeframe. This is going to make life a lot easier and programs a lot
-faster due to less requests to do.
+faster due to less requests to do. Apparently we can not really filter on anything interesting :/.
 
 So for now, the program is going to ask for the timeframe in which it is supposed to search for 'bad evaluations'. The 
 program then runs through all the api call and the transforms the gathered data. Results are shown on the screen and stored
 in a file or database.
 
 The logic behind everything would be like this:
+```python
 for each student:
-    for each evaluation as corrector in the last timeframe:
-        if bad:
-            create eval object
-            store object in list
+    for each evaluation as corrected in the last timeframe:
+        if bad evaluation:
+            create bad_eval object
+            store bad_eval in list
             continue
         else:
             continue
+
+return list
+```
+
+The scale_team endpoint gives me the possibility to ask for the scale_teams as corrector or corrected. I first taught of
+using both to be sure not to miss any scale_team. I realised that if you ask all the scales of all students from corrected
+point of vue, you should normally not miss any.
 
 ### User Interactions
 
@@ -144,6 +159,20 @@ In command line it would be first, second and third argument:
 
 Or use a config file for both possibilities.
 
+Due to the asked support for a docker container, the best solution would be the UI but it asks a lot of code which is,
+I think, absolutely not necessary for this program to work perfectly fine (although it as always nice to have a UI).
+By using a config file it would be easier to support both Docker and non docker but with some docker magic it appears we
+can pass arguments to our program. Hope it works, would be nice to support both config file and normal input.
+
+### Data printing/storing
+
+First I onl wanted to print the data in the console because I taught I had to setup a whole mysql server so I didn't 
+want to. After reading the assignment multiple times it appears that it is SQLite and that by consequence it is a local 
+file. Thanks to some beautiful packages, I am able to write with SQL query's to a SQLite file.
+
+I think printing the solution is the way to do it because files are annoying but it is nice to be able to store your 
+data in a file. I would prefer to have is stored in a json file for continuity with the 42api.
+
 ## Alternative/better solution
 
 A better and more efficient solution would be to have webhooks. This way we can make sure that we make mistake in any requests
@@ -163,5 +192,7 @@ and a lot of buttons to interact with these "reports".
 
 ## Other tools
 
-- Tool for tutors to tig more easily
+- Tool for tutors to tig more easily during piscines
 - Map of connected students
+- discord bot that automatically creates a discord vocal channel for remote evaluations
+- tool for exam statistics of ongoing exams (dashboard of current exams)
