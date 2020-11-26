@@ -151,25 +151,6 @@ def get_project_name(projects, project_id):
             return project['name']
 
 
-def format_range(minval, maxval=None, date=False):
-    """Format value of range parameter more easily. Supports date formating to ISO 8601 format if date is set to True.
-
-    :param minval: min value of the range
-    :param maxval: max value of the range
-    :param bool date: if the parameters are dates or not
-    :return: formated string containing min,max
-    """
-    if date is True:
-        mintime = datetime.strptime(minval, '%d/%m/%Y').isoformat()
-        if maxval is None:
-            maxtime = datetime.now().isoformat()
-        else:
-            maxtime = datetime.strptime(maxval, '%d/%m/%Y').isoformat()
-        return f'{mintime},{maxtime}'
-    else:
-        return f'{minval},{maxval}'
-
-
 def show_result(session, bad_evals):
     projects = get_projects(session)
 
