@@ -153,9 +153,6 @@ def get_project_name(projects, project_id):
 def show_result(session, bad_evals):
     projects = get_projects(session)
 
-    if not bad_evals:
-        print('No bad evaluations, your students are good correctors!')
-        exit(1)
     for bad_eval in bad_evals:
         bad_eval.project = get_project_name(projects, bad_eval.project_id)
         bad_eval.print()
@@ -217,7 +214,13 @@ def main():
     parameters = {'sort[]': '-created_at'}
     parameters.update(parameters)
 
+    # Get al evaluations and process them
     bad_evals = check_evaluations(session, dates)
+    # Check if any processed evals are bad
+    if not bad_evals:
+        print('No bad evaluations, your students are good correctors!')
+        exit(1)
+    # Print results
     show_result(session, bad_evals)
 
 
