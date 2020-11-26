@@ -122,16 +122,19 @@ def get_campus_students(session, school):
 
 
 def get_projects(session):
-    """Get all the project ids and related names.
+    """Get all the project ids and related names from certain cursus. Do not put all cursus or you
+    may need to wait for several minutes due to api request limitation.
 
     :param OAuth2Session session: authenticated session to make requests
-    :return: dict of
+    :return: dict of id and project names
     """
-    projects = get_all_pages(session, '/projects', 100)
+    cursuses = [1, 21]  # cursus ids from which to get the projects
     project_names = []
 
-    for project in projects:
-        project_names.append({'id': project['id'], 'name': project['name']})
+    for cursus in cursuses:
+        projects = get_all_pages(session, f'/cursus/{cursus}/projects', 100, {'filter[exam]': False})
+        for project in projects:
+            project_names.append({'id': project['id'], 'name': project['name']})
 
     return project_names
 
