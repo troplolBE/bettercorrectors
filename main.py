@@ -3,9 +3,9 @@ from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
 # general imports
-import sys
 import time
 import json
+import argparse
 
 from rules import detect_bad_eval
 from bad_evaluation import *
@@ -207,16 +207,35 @@ def check_evaluations(session, dates):
     return bad_evals
 
 
+def parse_parameters():
+    """Function that setup the ArgumentParser to parse all the arguments we need to make the program run properly.
+
+    :return:
+    """
+    parser = argparse.ArgumentParser(description='Program that checks for bad evaluations.')
+    parser.usage = 'bettercorrectors [-h] client_id client_secret start_date [end_date] [--sql file]'
+    parser.add_argument('client_id', help='the client_id of your intranet application', type=str)
+    parser.add_argument('client_secret', help='the client_secret of your intra application', type=str)
+    parser.add_argument('start_date', help='the latest date in iso format', type=datetime.fromisoformat)
+    parser.add_argument('end_date', help='the closest date in iso format (optional)', type=datetime.fromisoformat,
+                        default=datetime.now(), nargs='?')
+    parser.add_argument('--sql', dest='file', help='whether or not the result should be stored in a sqlite database',
+                        type=str)
+    args = parser.parse_args()
+    return args
+
+
 def main():
-    # Here we make sure there is at least one argument
-    if len(sys.argv) != 3:
-        print("Please provide client_id and client_secret.")
-        exit(1)
+    # In this function we check that all required parameters are present.
+    # An error message is displayed if not all parameters are present.
+    args = parse_parameters()
 
-    session = get_session(sys.argv[1], sys.argv[2])
+    # Generate token using OAuth2 Workflow
+    session = get_session(args.client_id, args.client_secret)
 
-    dates = {'range[begin_at]': format_range('18/10/2018', '19/10/2018', True)}
-    dates.update({'sort[]': '-created_at'})
+    dates = {'range[begin_at]': f'{args.start_date.isoformat()},{args.end_date.isoformat()}'}
+    parameters = {'sort[]': '-created_at'}
+    parameters.update(parameters)
 
     bad_evals = check_evaluations(session, dates)
     show_result(session, bad_evals)
