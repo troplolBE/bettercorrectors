@@ -1,15 +1,6 @@
 # file containing functions related to bad evaluations
 from datetime import datetime
 
-"""
-list of needed things to show to user:
-- scale id
-- login corrector
-- login corrected
-- number detection rule
-- time
-"""
-
 
 class BadEvaluation:
     """Class containing the strict minimum information about a bad evaluation."""
