@@ -129,6 +129,33 @@ def get_campus_students(session, school):
     return ids
 
 
+def get_projects(session):
+    """Get all the project ids and related names.
+
+    :param OAuth2Session session: authenticated session to make requests
+    :return: dict of
+    """
+    projects = get_all_pages(session, '/projects', 100)
+    project_names = []
+
+    for project in projects:
+        project_names.append({'id': project['id'], 'name': project['name']})
+
+    return project_names
+
+
+def get_project_name(projects, project_id):
+    """Returns the project name of the given project id
+
+    :param projects: dictionary of all the projects (id and name)
+    :param project_id: id of the project name you are seeking
+    :return: project name
+    """
+    for project in projects:
+        if project['id'] == project_id:
+            return project['name']
+
+
 def format_range(minval, maxval=None, date=False):
     """Format value of range parameter more easily. Supports date formating to ISO 8601 format if date is set to True.
 
@@ -146,6 +173,18 @@ def format_range(minval, maxval=None, date=False):
         return f'{mintime},{maxtime}'
     else:
         return f'{minval},{maxval}'
+
+
+def show_result(session, bad_evals):
+    projects = get_projects(session)
+
+    if not bad_evals:
+        print('No bad evaluations, your students are good correctors!')
+        exit(1)
+    for bad_eval in bad_evals:
+        bad_eval.project = get_project_name(projects, bad_eval.project_id)
+        bad_eval.print()
+        del bad_eval
 
 
 def check_evaluations(session, dates):
@@ -185,12 +224,7 @@ def main():
     dates.update({'sort[]': '-created_at'})
 
     bad_evals = check_evaluations(session, dates)
-    if not bool(bad_evals):
-        print('No bad evaluations, your students are good correctors!')
-    else:
-        for bad_eval in bad_evals:
-            bad_eval.print()
-            del bad_eval
+    show_result(session, bad_evals)
 
 
 # Press the green button in the gutter to run the script.
