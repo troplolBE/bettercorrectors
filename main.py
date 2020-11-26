@@ -49,14 +49,14 @@ def check_status_code(status_code):
     exit(1)
 
 
-def get_all_pages(session, url, size, params=None):
-    """Get the data on all pages of a specified url with pagesize size
+def get_single_page(session, url, size, params=None):
+    """Make a request to the api and only grab one page
 
-    :param OAuth2Session session: the OAuth2Sesion
-    :param str url: url where to do the request
-    :param int size: size of the page that gets returned
-    :param params: parameters for the url
-    :return: all the data from all the requests made
+    :param OAuth2Session session: the authenticated OAuth2 session
+    :param str url: endpoint where to do the request
+    :param int size: size of the page that you get (1-100)
+    :param params: more paramters that you would like to pass to the request
+    :return: the response
     """
     parameters = {'page[size]': size}
     if params is not None:
@@ -66,18 +66,30 @@ def get_all_pages(session, url, size, params=None):
         time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
         response = session.get(f'{base_url}{url}', params=parameters)
     check_status_code(response.status_code)
+    return response
+
+
+def get_all_pages(session, url, size, params=None):
+    """Get the data on all pages of a specified url with pagesize size
+
+    :param OAuth2Session session: the OAuth2Sesion
+    :param str url: url where to do the request
+    :param int size: size of the page that gets returned
+    :param params: parameters for the url
+    :return: all the data from all the requests made
+    """
+    response = get_single_page(session, url, size, params)
+    parameters = {}
     entries = int(response.headers['X-Total'])
     pages = int(entries / size) + (entries % size > 1)
     data = response.json()
 
+    if params is not None:
+        parameters.update(params)
     if pages > 1:
         for page in range(2, pages + 1):
             parameters.update({'page[number]': page})
-            r = session.get(f'{base_url}{url}', params=parameters)
-            if r.status_code == 429:
-                time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
-                r = session.get(f'{base_url}{url}', params=parameters)
-            check_status_code(r.status_code)
+            r = get_single_page(session, url, size, params=parameters)
             try:
                 new_data = r.json()
                 if new_data == '[]':
@@ -88,26 +100,6 @@ def get_all_pages(session, url, size, params=None):
                 exit(1)
 
     return data
-
-
-def get_single_page(session, url, size, params=None):
-    """Make a request to the api and only grab one page
-
-    :param OAuth2Session session: the authenticated OAuth2 session
-    :param str url: endpoint where to do the request
-    :param int size: size of the page that you get (1-100)
-    :param params: more paramters that you would like to pass to the request
-    :return: the data from your request
-    """
-    parameters = {'page[size]': size}
-    if params is not None:
-        parameters.update(params)
-    response = session.get(f'{base_url}{url}', params=parameters)
-    check_status_code(response.status_code)
-    if response.status_code == 429:
-        time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
-        response = session.get(f'{base_url}{url}', params=parameters)
-    return response.json()
 
 
 def get_campus_students(session, school):
