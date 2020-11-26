@@ -44,6 +44,13 @@ def rule3(evaluation):
 
 
 def detect_bad_eval(evaluation):
+    """Function that takes an evaluation as parameter and will use multiple rules to detect if
+    the evaluation is considered bad or not. It returns a bad_evaluation object in case one of the
+    return positive.
+
+    :param evaluation: an evaluation that needs to be checked
+    :return: BadEvaluation if bad, False otherwise
+    """
     rules = [rule1, rule2, rule3]
 
     for index, rule in enumerate(rules, 1):
