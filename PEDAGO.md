@@ -11,7 +11,13 @@ final code_
 
 ## Definition of a bad evaluation
 
-First of all, what is a bad evaluation ? I see the following scenarios:
+First of all, what is a bad evaluation ? A bad evaluation is an evaluation that has not been done properly or at least 
+doesn't respect the 42 standards. The standards exist to maintain a certain level of competence amongst the 42 students
+and to preserve the reputation of 42 in the professional world but there is also a pedagogical aspect that is very
+important. If the corrector and the corrected don't learn something from an evaluation than it has no real purpose. It is
+important that the context and other factors are taken into account before considering that an evaluation is bad.
+
+I see the following scenarios:
 1. A corrector graded a project to pass but moulinette failed the project.
 2. A corrector graded a project to pass and the corrected cancelled the project.
 3. A correction lasted too short to be a real correction, depending on the project. (ex 42sh < 30min is not tested at all, just minimum requirements)
@@ -164,9 +170,15 @@ I think, absolutely not necessary for this program to work perfectly fine (altho
 By using a config file it would be easier to support both Docker and non docker but with some docker magic it appears we
 can pass arguments to our program. Hope it works, would be nice to support both config file and normal input.
 
-### Data printing/storing
+Docker doesn't seem to be a problem after all. The command line interface is the best solution for the time I had and 
+my previous knowledge of python. It wouldn't take too much effort to implement a graphical user interface and it would be
+a lot more user-friendly.
 
-First I onl wanted to print the data in the console because I taught I had to setup a whole mysql server so I didn't 
+argparse is the easiest way to handle the parameters.
+
+### IO
+
+First I only wanted to print the data in the console because I taught I had to setup a whole mysql server so I didn't 
 want to. After reading the assignment multiple times it appears that it is SQLite and that by consequence it is a local 
 file. Thanks to some beautiful packages, I am able to write with SQL query's to a SQLite file.
 

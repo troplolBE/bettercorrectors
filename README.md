@@ -79,7 +79,7 @@ make sure that an evaluation is bad or not. (to be verified by a human, always)
 
 Sample of complete returned data [sample 1](#sample-1)
 
-Here is a non-exhaustive list of intresting data for detection:
+Here is a non-exhaustive list of interesting data for detection:
 - final_mark
 - begin_at
 - filled_at
@@ -88,6 +88,11 @@ Here is a non-exhaustive list of intresting data for detection:
 - feedback
 
 ### Pyhton
+
+List of packets I used:
+- [requests-oauthlib](https://requests-oauthlib.readthedocs.io/en/latest/index.html) for api requests and OAuth2
+- [argparse](https://docs.python.org/fr/3/library/argparse.html#module-argparse) for arguments parsing
+- [sqlite3](https://docs.python.org/3/library/sqlite3.html) for writing to the database file
 
 ### Documentation samples
 
