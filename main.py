@@ -27,24 +27,22 @@ def get_session(client_id, client_secret):
     return session
 
 
-def check_status_code(status_code):
-    """Checks the status code of the request and quits if it is not 200.
-    Also prints an error message in the console
+def check_status_code(response):
+    """Check the status code of the response in case it is not 200. Program exits after this.
 
-    :param int status_code: status code of the request
-    :return: nothing
+    :param Response response: status code of the request
     """
-    if status_code == 200:
-        return True
-    elif status_code == 400:
+    if response.status_code == 400:
         print('ERROR: The request is malformed.')
-    elif status_code == 404:
-        print('ERROR: Page or ressource not found, check endpoint and request.')
-    elif status_code == 500:
+    elif response.status_code == 404:
+        print('ERROR: Page or resource not found, check endpoint and request.')
+    elif response.status_code == 500:
         print('ERROR: server had an error.')
     else:
         print('ERROR: unknow error.')
-    print(f'ERROR: code is {status_code}')
+        print('request = |', response.url, '|')
+        print(response.headers)
+    print(f'ERROR: code is {response.status_code}')
     print('ERROR: program stopped because of request errors.')
     exit(1)
 
@@ -65,7 +63,8 @@ def get_single_page(session, url, size, params=None):
     if response.status_code == 429:
         time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
         response = session.get(f'{base_url}{url}', params=parameters)
-    check_status_code(response.status_code)
+    if response.status_code != 200:
+        check_status_code(response)
     return response
 
 
