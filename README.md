@@ -22,7 +22,46 @@ cd bettercorrectors
 
 You can use the program with or without docker.
 
+### Parameters
+
+Here is the output of the help of the program. This contains all needed information to be sure to run the program
+correctly.
+
+```shell
+(test) C:\Users\thoma\PycharmProjects\test>python main.py -h
+usage: bettercorrectors [-h] client_id client_secret start_date [end_date] [--sql file]
+
+Program that checks for bad evaluations.
+
+positional arguments:
+  client_id      the client_id of your intranet application
+  client_secret  the client_secret of your intra application
+  start_date     the latest date in iso format
+  end_date       the closest date in iso format (optional)
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --sql FILE     name of the database file in case you want to save results in a sqlite database
+
+```
+
+If end_date is not given, `datetime.now()` is used as default value.
+
+_IMPORTANT_: The dates need to be in ISO8601 format. This permits to be really presice on the dates we need to filter.
+Some examples:
+- 2018-05-05
+- 2019-10-04T10:30:26
+- "2020-01-02 20:50"
+
 ### With docker
+
+Running a program in a docker container can be usefull so I created a small Dockerfile that only contains the necessary 
+to run a python app. No OS, no nothing. This is why I use the `--rm` option when running because otherwise you would not
+be able to run the same command twice.
+
+The `-v` option is to mount a directory from your computer into the container which gives the ability to get the
+database file after running the container. The first part `~result` is the directory on your computer and `/result` is
+the directory inside the container. Replace the first part if needed, for more info read the [doc](https://docs.docker.com/storage/volumes/)
 
 First build the container.
 ```bash
@@ -34,9 +73,14 @@ If everything went well you can now run the container.
 docker run --rm --name bettercorrectors -v ~/result:/result bettercorrimg <params_for_program>
 ```
 
+_Note: replace <params_for_program> with the parameters above._
+
 ### Without docker
 
-In case you don't want to run the program in a container, you can perfectly run it on your normal computer.
+To run this program you will need to install 1 package which is going to install a lot more. To avoid the polution of
+your own python environment you can use [pipenv](https://pipenv-fork.readthedocs.io/en/latest/) or 
+[virtualenv](https://virtualenv.pypa.io/en/latest/) to create a separate environment to install the packages.
+packages.
 
 Install all packages using pip.
 
@@ -48,6 +92,8 @@ Run the program like this.
 ```bash
 python3 main.py <params_for_program>
 ```
+
+_Note: replace <params_for_program> with the parameters above._
 
 ## Documentation
 Document containing all the references and links to docs I used for the project.
