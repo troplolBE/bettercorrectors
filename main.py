@@ -6,9 +6,11 @@ from requests_oauthlib import OAuth2Session
 import time
 import json
 import argparse
+import os
 
 from rules import detect_bad_eval
 from bad_evaluation import *
+from database import *
 
 base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the api
 
@@ -157,6 +159,27 @@ def show_result(session, bad_evals):
         bad_eval.project_name = get_project_name(projects, bad_eval.project_id)
         bad_eval.print()
         del bad_eval
+
+
+def save_evaluations(session, database, bad_evals):
+    """Store all the bad evaluations in a sqlite file.
+
+    :param OAuth2Session session: the oauth 2 session for the projects
+    :param str database: name of the database file
+    :param bad_evals: all the bad evaluations
+    """
+    os.makedirs('result', exist_ok=True)
+    os.chdir('result')
+    conn = create_connection(database)
+    projects = get_projects(session)
+
+    print(f'saving results in results\\{database}...')
+    for bad_eval in bad_evals:
+        bad_eval.project_name = get_project_name(projects, bad_eval.sql_tuple())
+        insert_evaluation(conn, bad_eval)
+        del bad_eval
+
+    print('results saved !')
 
 
 def check_evaluations(session, dates):

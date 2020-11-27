@@ -41,6 +41,10 @@ class BadEvaluation:
         print(f'at {self.date.hour}:{self.date.strftime("%M")} ', end='')
         print(f'and it was considered bad by rule number {self.detection}.')
 
+    def sql_tuple(self):
+        return self.scale_id, self.correctorid, self.corrector, self.correctedid, self.corrected, self.project_name, \
+               self.project_id, self.detection, self.date
+
 
 def create_bad_eval(evaluation, rule):
     """Create a BadEvaluation object based on the evaluation passed as argument
