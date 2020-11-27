@@ -1,7 +1,5 @@
 # BetterCorrectors
 
-_**!!! PROJECT IS NOT FINISHED YET, IT IS STILL WIP !!!**_
-
 BetterCorrectors is a python project coded to find 'bad students' who made 'bad evaluations' during specified period of time.
 The script returns a timestamp of when the evaluation took place and the login of the users who are responsible for this correction.
 The definition of a bad evaluation is strictly personnal and could not fit your requirements, for more information about that, please read [pedagody](PEDAGO.md) 
@@ -22,6 +20,9 @@ cd bettercorrectors
 
 You can use the program with or without docker. In both cases, if you want your results in a sqlite database, the resulting
 database will be found under the `result` directory.
+
+Please, save yourself some time. Don't run this on windows. Docker doesn't like windows and windows doesn't like docker.
+I you do, note that it WILL work.
 
 ### Parameters
 
