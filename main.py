@@ -152,7 +152,12 @@ def get_project_name(projects, project_id):
             return project['name']
 
 
-def show_result(session, bad_evals):
+def print_evaluations(session, bad_evals):
+    """Print all the bad evaluations in the console with a pretty string.
+
+    :param OAuth2Session session: session to gather the projects
+    :param bad_evals: the bad evaluations that need to be printed
+    """
     projects = get_projects(session)
 
     for bad_eval in bad_evals:
@@ -232,6 +237,7 @@ def main():
 
     # Generate token using OAuth2 Workflow
     session = get_session(args.client_id, args.client_secret)
+    print('Authentication successful !')
 
     # Prepare fate parameters for evaluations query
     dates = {'range[begin_at]': f'{args.start_date.isoformat()},{args.end_date.isoformat()}'}

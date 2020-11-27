@@ -35,6 +35,7 @@ class BadEvaluation:
         self.date = datetime.fromisoformat(self.time[:-1])
 
     def print(self):  # bad eval: nsondag corrected tcastron's 42sh on time and it was detected bad by rule number
+        """Print the bad_evaluation in the console"""
         print(f'bad evaluation: {self.corrector}({self.correctorid}) ', end='')
         print(f'corrected {self.corrected}({self.correctedid})\'s {self.project_name} ', end='')
         print(f'on {self.date.strftime("%b")} {self.date.day} {self.date.year} ', end='')
