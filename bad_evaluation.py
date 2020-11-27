@@ -63,5 +63,6 @@ def create_bad_eval(evaluation, rule):
     bad.time = evaluation['begin_at']
     bad.project_id = evaluation['team']['project_id']
     bad.project = '{}'.format(bad.project_id)
+    # Set date to avoid problem at creation of object
     bad.set_date()
     return bad

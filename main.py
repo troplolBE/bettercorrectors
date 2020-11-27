@@ -16,7 +16,8 @@ base_url = 'https://api.intra.42.fr/v2'  # base url for all requests made to the
 
 
 def get_session(client_id, client_secret):
-    """Method to get the OAuth2 session for all future requests
+    """Method that uses given client_id and client_secret to authenticate to the api server
+    using the OAuth2 BackendApplication workflow.
 
     :param str client_id: the client_id of the backend application
     :param str client_secret: the secret of the backend application
@@ -50,7 +51,8 @@ def check_status_code(response):
 
 
 def get_single_page(session, url, size, params=None):
-    """Make a request to the api and only grab one page
+    """Make a request to a 42 endpoint with the optional parameters params and by setting the parameter page[siz] to
+    size in order to control how much indexes are returned. Ex: set size to 1 to get 1 index from request.
 
     :param OAuth2Session session: the authenticated OAuth2 session
     :param str url: endpoint where to do the request
@@ -58,20 +60,30 @@ def get_single_page(session, url, size, params=None):
     :param params: more paramters that you would like to pass to the request
     :return: the response
     """
+    # Parameter to control number of returned indexes
     parameters = {'page[size]': size}
+    # Add argument parameters to page parameter if exists
     if params is not None:
         parameters.update(params)
+    # Make the request
     response = session.get(f'{base_url}{url}', params=parameters)
+    # Check fi we didn't exceed the request limit rate -> 429
     if response.status_code == 429:
+        # Calculate miliseconds needed to sleep until next second (fails in some cases, was optimization attempt)
         time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
+        # Do request again after waiting
         response = session.get(f'{base_url}{url}', params=parameters)
+    # Check for other status codes if request not complete
     if response.status_code != 200:
         check_status_code(response)
     return response
 
 
 def get_all_pages(session, url, size, params=None):
-    """Get the data on all pages of a specified url with pagesize size
+    """Make a request to a 42 endpoint with the function get_single_age. Because the 42 api uses a pagination system
+    this function get the first page and the detects how many pages there are by reading the X-Total header which gives
+    the number indexes on an endpoint with a specific query. It then cycles through all the pages to return all the data
+    available.
 
     :param OAuth2Session session: the OAuth2Sesion
     :param str url: url where to do the request
@@ -79,19 +91,29 @@ def get_all_pages(session, url, size, params=None):
     :param params: parameters for the url
     :return: all the data from all the requests made
     """
+    # Get first page to get results and detect number fo pages
     response = get_single_page(session, url, size, params)
     parameters = {}
+    # Get number of indexes for this request
     entries = int(response.headers['X-Total'])
+    # Calculate amount of pages that need to be requested
     pages = int(entries / size) + (entries % size > 1)
+    # Data retrived by the request
     data = response.json()
 
+    # Add params if custom parameters
     if params is not None:
         parameters.update(params)
+    # Detect if more than 1 page
     if pages > 1:
+        # Range between 2 and pages + 1 to get the last one as well
         for page in range(2, pages + 1):
+            # Update parameters with page[number] parameter
             parameters.update({'page[number]': page})
+            # Make the request
             r = get_single_page(session, url, size, params=parameters)
             try:
+                # Merge data from request with already received data
                 new_data = r.json()
                 if new_data == '[]':
                     continue
@@ -105,17 +127,20 @@ def get_all_pages(session, url, size, params=None):
 
 def get_campus_students(session, school):
     """Function that returns all the unique ids of all the non-anonymized students of the school
-    passed as parameter.
+    passed as parameter. We also filter the request to avoid staff acoounts, may reduce the number
+    of requests by 1.
 
     :param OAuth2Session session: OAuth2 session
     :param int school: unique id of a 42 school
     :return: dict of student ids
     """
+    # Parameter to avoid getting staff users
     parameters = {'filter[staff?]': False}
     users = get_all_pages(session, f'/campus/{school}/users', 100, params=parameters)
     ids = []
 
     for user in users:
+        # Check that the user is not anonymized by checking first letters of login
         if not user['login'].startswith('3b3-'):
             ids.append(user['id'])
 
@@ -133,19 +158,22 @@ def get_projects(session):
     project_names = []
 
     for cursus in cursuses:
+        # Get all the projects from 1 cursus, very slow process because projects endpoint contains
+        # a lot of information
         projects = get_all_pages(session, f'/cursus/{cursus}/projects', 100, {'filter[exam]': False})
         for project in projects:
+            # Create dictionary containing project id and project name ans set in bigger dict
             project_names.append({'id': project['id'], 'name': project['name']})
 
     return project_names
 
 
 def get_project_name(projects, project_id):
-    """Returns the project name of the given project id
+    """Runs through all projects to find a matching id and return the corresponding name
 
     :param projects: dictionary of all the projects (id and name)
     :param project_id: id of the project name you are seeking
-    :return: project name
+    :return: name of the project
     """
     for project in projects:
         if project['id'] == project_id:
@@ -158,9 +186,13 @@ def print_evaluations(session, bad_evals):
     :param OAuth2Session session: session to gather the projects
     :param bad_evals: the bad evaluations that need to be printed
     """
+    # Gather all the project ids and names, this is a very very slow process
     projects = get_projects(session)
 
+    # Print all bad evaluations
     for bad_eval in bad_evals:
+        # project_name is set here and not in create_bad_eval to make program faster in
+        # case there are no bad evaluations. (less requests, less processing)
         bad_eval.project_name = get_project_name(projects, bad_eval.project_id)
         bad_eval.print()
         del bad_eval
@@ -173,13 +205,19 @@ def save_evaluations(session, database, bad_evals):
     :param str database: name of the database file
     :param bad_evals: all the bad evaluations
     """
+    # Create result directory and go in it
     os.makedirs('result', exist_ok=True)
     os.chdir('result')
+    # Create database file
     conn = create_connection(database)
+    # Gather all the project ids and names, this is a very very slow process
     projects = get_projects(session)
 
     print(f'saving results in results\\{database}...')
+    # Save each bad eval in the database file
     for bad_eval in bad_evals:
+        # project_name is set here and not in create_bad_eval to make program faster in
+        # case there are no bad evaluations. (less requests, less processing)
         bad_eval.project_name = get_project_name(projects, bad_eval.project_id)
         insert_evaluation(conn, bad_eval.sql_tuple())
         del bad_eval
@@ -201,10 +239,13 @@ def check_evaluations(session, dates):
 
     print(f'found {len(user_ids)} students !')
     for user_id in user_ids:
+        # Get all evaluations from student id in selected timeframe
         evaluations = get_all_pages(session, f'/users/{user_id}/scale_teams/as_corrected', 100, params=dates)
         if evaluations == '[]':
             continue
+        # Check each returned evaluation if bad or not
         for evaluation in evaluations:
+            # Object BadEvaluation is returned if rules come back True
             bad = detect_bad_eval(evaluation)
             if isinstance(bad, BadEvaluation):
                 bad_evals.append(bad)
