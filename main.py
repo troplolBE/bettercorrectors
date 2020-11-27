@@ -154,7 +154,7 @@ def show_result(session, bad_evals):
     projects = get_projects(session)
 
     for bad_eval in bad_evals:
-        bad_eval.project = get_project_name(projects, bad_eval.project_id)
+        bad_eval.project_name = get_project_name(projects, bad_eval.project_id)
         bad_eval.print()
         del bad_eval
 
