@@ -210,6 +210,7 @@ def main():
     # Generate token using OAuth2 Workflow
     session = get_session(args.client_id, args.client_secret)
 
+    # Prepare fate parameters for evaluations query
     dates = {'range[begin_at]': f'{args.start_date.isoformat()},{args.end_date.isoformat()}'}
     parameters = {'sort[]': '-created_at'}
     parameters.update(parameters)
