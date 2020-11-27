@@ -60,8 +60,8 @@ to run a python app. No OS, no nothing. This is why I use the `--rm` option when
 be able to run the same command twice.
 
 The `-v` option is to mount a directory from your computer into the container which gives the ability to get the
-database file after running the container. The first part `~result` is the directory on your computer and `/result` is
-the directory inside the container. Replace the first part if needed, for more info read the [doc](https://docs.docker.com/storage/volumes/)
+database file after running the container. The first part `~result` is the directory on your computer and `/code/result`
+is the directory inside the container. Replace the first part if needed, for more info read the [doc](https://docs.docker.com/storage/volumes/)
 
 First build the container.
 ```bash
@@ -70,7 +70,7 @@ docker build --tag bettercorrimg .
 
 If everything went well you can now run the container.
 ```bash
-docker run --rm --name bettercorrectors -v ~/result:/result bettercorrimg <params_for_program>
+docker run --rm --name bettercorrectors -v ~/result:/code/result bettercorrimg <params_for_program>
 ```
 
 _Note: replace <params_for_program> with the parameters above._

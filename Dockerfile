@@ -4,7 +4,7 @@ LABEL maintainer='tcastron'
 LABEL version='0.1'
 LABEL description='container that runs the bettercorrecors program'
 
-WORKDIR /bettercorrectors
+WORKDIR /code
 
 COPY requirements.txt .
 COPY *.py ./
