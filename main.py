@@ -187,7 +187,7 @@ def check_evaluations(session, dates):
 def parse_parameters():
     """Function that setup the ArgumentParser to parse all the arguments we need to make the program run properly.
 
-    :return:
+    :return ArgumentParser: returns the arguments of the program
     """
     parser = argparse.ArgumentParser(description='Program that checks for bad evaluations.')
     parser.usage = 'bettercorrectors [-h] client_id client_secret start_date [end_date] [--sql file]'
@@ -196,8 +196,8 @@ def parse_parameters():
     parser.add_argument('start_date', help='the latest date in iso format', type=datetime.fromisoformat)
     parser.add_argument('end_date', help='the closest date in iso format (optional)', type=datetime.fromisoformat,
                         default=datetime.now(), nargs='?')
-    parser.add_argument('--sql', dest='file', help='whether or not the result should be stored in a sqlite database',
-                        type=str)
+    parser.add_argument('--sql', dest='file', help='''name of the database file in case you want to save results in a 
+                        sqlite database''', type=str)
     args = parser.parse_args()
     return args
 
