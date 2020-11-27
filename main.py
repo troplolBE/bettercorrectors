@@ -175,8 +175,8 @@ def save_evaluations(session, database, bad_evals):
 
     print(f'saving results in results\\{database}...')
     for bad_eval in bad_evals:
-        bad_eval.project_name = get_project_name(projects, bad_eval.sql_tuple())
-        insert_evaluation(conn, bad_eval)
+        bad_eval.project_name = get_project_name(projects, bad_eval.project_id)
+        insert_evaluation(conn, bad_eval.sql_tuple())
         del bad_eval
 
     print('results saved !')
@@ -244,8 +244,13 @@ def main():
     if not bad_evals:
         print('No bad evaluations, your students are good correctors!')
         exit(1)
-    # Print results
-    show_result(session, bad_evals)
+    # Show how much bad evaluations were found
+    print(f'found {len(bad_evals)} bad evaluations !')
+    # Check if need to save in database
+    if args.file:
+        save_evaluations(session, args.file, bad_evals)
+    else:
+        print_evaluations(session, bad_evals)
 
 
 # Press the green button in the gutter to run the script.

@@ -1,24 +1,15 @@
 import sqlite3
 
 
-def check_evaluation_exists(connection, evaluation):
-    check_eval = ""
-
-    try:
-        cursor = connection.cursor()
-        cursor.execute(check_eval, evaluation)
-        connection.commit()
-    except sqlite3.Error as e:
-        print(e)
-
-
 def insert_evaluation(connection, evaluation):
     """Insert evaluation into the database
 
     :param connection: connection to the database
     :param tuple evaluation: bad evaluation that needs to be saved in tuple form
     """
-    insert_eval = ""
+    insert_eval = """INSERT INTO evaluations(scale_id,corrector_id,corrector_login,
+                                            corrected_id,corrected_login,project_name,
+                                            project_id,rule,begin_at) VALUES(?,?,?,?,?,?,?,?,?)"""
     try:
         cursor = connection.cursor()
         cursor.execute(insert_eval, evaluation)
@@ -39,13 +30,13 @@ def create_connection(database):
                         id INTEGER PRIMARY KEY,
                         scale_id INTEGER NOT NULL,
                         corrector_id INTEGER NOT NULL,
-                        corrector_login text NOT NULL,
+                        corrector_login TEXT NOT NULL,
                         corrected_id INTEGER NOT NULL,
-                        corrected_login text NOT NULL,
-                        project_name text NOT NULL,
+                        corrected_login TEXT NOT NULL,
+                        project_name TEXT NOT NULL,
                         project_id INTEGER NOT NULL,
                         rule INTEGER NOT NULL,
-                        begin_at text NOT NULL
+                        begin_at TEXT NOT NULL
                     ); """
     try:
         connection = sqlite3.connect(database)
