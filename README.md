@@ -20,7 +20,8 @@ cd bettercorrectors
 
 ## Usage
 
-You can use the program with or without docker.
+You can use the program with or without docker. In both cases, if you want your results in a sqlite database, the resulting
+database will be found under the `result` directory.
 
 ### Parameters
 
