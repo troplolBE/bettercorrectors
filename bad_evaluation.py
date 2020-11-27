@@ -60,6 +60,7 @@ def create_bad_eval(evaluation, rule):
     bad.correctedid = evaluation['correcteds'][0]['id']
     bad.detection = rule
     bad.time = evaluation['begin_at']
-    bad.project = '{}'.format(evaluation['team']['project_id'])
+    bad.project_id = evaluation['team']['project_id']
+    bad.project = '{}'.format(bad.project_id)
     bad.set_date()
     return bad
