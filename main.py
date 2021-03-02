@@ -70,7 +70,8 @@ def get_single_page(session, url, size, params=None):
     # Check fi we didn't exceed the request limit rate -> 429
     if response.status_code == 429:
         # Calculate miliseconds needed to sleep until next second (fails in some cases, was optimization attempt)
-        time.sleep(round((60 - datetime.now().second) / 60, 1) + 0.1)
+        now = datetime.utcnow()
+        time.sleep(round(1 - now.microsecond/1000000.0, 6))
         # Do request again after waiting
         response = session.get(f'{base_url}{url}', params=parameters)
     # Check for other status codes if request not complete
