@@ -11,6 +11,10 @@ def rule1(evaluation):
     final_mark = evaluation['final_mark']
     project_mark = evaluation['team']['final_mark']
 
+    if final_mark is None:
+        print(evaluation)
+        return False
+
     if (final_mark - project_mark) >= 10:
         return True
     return False
@@ -32,8 +36,17 @@ def rule3(evaluation):
     :return: whether of not the eval is bad according to this rule
     """
     duration = evaluation['scale']['duration'] / 60
-    begin = datetime.fromisoformat(evaluation['begin_at'][:-1])
-    end = datetime.fromisoformat(evaluation['filled_at'][:-1])
+    if evaluation['begin_at'] is not None:
+        begin = datetime.fromisoformat(evaluation['begin_at'][:-1])
+    else:
+        begin = None
+    if evaluation['filled_at'] is not None:
+        end = datetime.fromisoformat(evaluation['filled_at'][:-1])
+    else:
+        end = None
+
+    if not all([duration, begin, end]):
+        return False
 
     diff = end - begin
     diff = diff / timedelta(minutes=1)
